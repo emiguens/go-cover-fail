@@ -1,8 +1,8 @@
 package pkg1
 
-import "github.com/gin-gonic/gin"
+import "net/http"
 
 // HasHeader ...
-func HasHeader(c *gin.Context, header string) bool {
-	return c.GetHeader(header) != ""
+func HasHeader(req *http.Request, header string) bool {
+	return req.Header.Get(header) != ""
 }

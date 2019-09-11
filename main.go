@@ -1,22 +1,23 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/emiguens/go-cover-fail/pkg1"
 	"github.com/emiguens/go-cover-fail/pkg2"
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi"
 )
 
 func main() {
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		hh1 := pkg1.HasHeader(c, "x-ttl")
-		hh2 := pkg2.HasHeader(c, "x-ttl")
+	r := chi.NewRouter()
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		hh1 := pkg1.HasHeader(r, "x-ttl")
+		hh2 := pkg2.HasHeader(r, "x-ttl")
 
-		c.JSON(200, gin.H{
-			"message": "pong",
-			"hh1":     hh1,
-			"hh2":     hh2,
-		})
+		fmt.Fprintf(w, "%t %t", hh1, hh2)
+
+		w.Write([]byte("welcome"))
 	})
-	r.Run() // listen and serve on 0.0.0.0:8080
+	http.ListenAndServe(":3000", r)
 }
